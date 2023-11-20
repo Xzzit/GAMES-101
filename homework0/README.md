@@ -1,0 +1,2 @@
+# Problem 1:
+Given a point P=(2,1), rotate the point counterclockwise by 45 degrees around the origin, then translate it by (1,2). Calculate the coordinates of the transformed point (using homogeneous coordinates).
