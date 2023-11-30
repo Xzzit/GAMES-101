@@ -145,7 +145,7 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
     float f2 = (100 + 0.1) / 2.0;
 
     Eigen::Matrix4f mvp = projection * view * model;
-    for (auto& i : ind)
+    for (auto &i : ind)
     {
         Triangle t;
 
@@ -155,11 +155,11 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
                 mvp * to_vec4(buf[i[2]], 1.0f)
         };
 
-        for (auto& vec : v) {
+        for (auto &vec : v) {
             vec /= vec.w();
         }
 
-        for (auto & vert : v)
+        for (auto &vert : v)
         {
             vert.x() = 0.5*width*(vert.x()+1.0);
             vert.y() = 0.5*height*(vert.y()+1.0);
