@@ -1,5 +1,10 @@
 # GAMES-101
 
+update apt
+```
+sudo apt update && sudo apt upgrade
+```
+
 install g++ gdb cmake
 ```
 sudo apt install g++ gdb cmake
