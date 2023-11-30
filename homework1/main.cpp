@@ -83,8 +83,16 @@ int main(int argc, const char** argv)
     Eigen::Vector3f eye_pos = {0, 0, 5};
 
     // set triangle vertices position and indices
-    std::vector<Eigen::Vector3f> pos{{2, 0, -2}, {0, 2, -2}, {-2, 0, -2}};
-    std::vector<Eigen::Vector3i> ind{{0, 1, 2}};
+    std::vector<Eigen::Vector3f> pos{
+        {0, 0, -2},
+        {0, 2, -2}, {-2, 0, -2},
+        {2, 0, -2}, {0, -2, -2}
+        };
+
+    std::vector<Eigen::Vector3i> ind{
+        {0, 1, 2},
+        {0, 3, 4}
+        };
 
     // load to pos_buf and ind_buf
     auto pos_id = r.load_positions(pos); // pos_id.pos_id = 0
@@ -128,10 +136,10 @@ int main(int argc, const char** argv)
         std::cout << "frame count: " << frame_count++ << '\n';
 
         if (key == 'a') {
-            angle += 10;
+            angle += 5;
         }
         else if (key == 'd') {
-            angle -= 10;
+            angle -= 5;
         }
     }
 
