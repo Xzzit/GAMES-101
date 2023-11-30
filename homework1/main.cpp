@@ -76,23 +76,28 @@ int main(int argc, const char** argv)
             return 0;
     }
 
+    // resize frame_buf and depth_buf vector length to w * h
     rst::rasterizer r(700, 700);
 
+    // set eye position
     Eigen::Vector3f eye_pos = {0, 0, 5};
 
+    // set triangle vertices position and indices
     std::vector<Eigen::Vector3f> pos{{2, 0, -2}, {0, 2, -2}, {-2, 0, -2}};
-
     std::vector<Eigen::Vector3i> ind{{0, 1, 2}};
 
-    auto pos_id = r.load_positions(pos);
-    auto ind_id = r.load_indices(ind);
+    // load to pos_buf and ind_buf
+    auto pos_id = r.load_positions(pos); // pos_id.pos_id = 0
+    auto ind_id = r.load_indices(ind); // ind_id.ind_id = 1
 
     int key = 0;
     int frame_count = 0;
 
     if (command_line) {
+        // clear frame_buf to (0, 0, 0) and depth_buf to infinity
         r.clear(rst::Buffers::Color | rst::Buffers::Depth);
 
+        // set mvp matrix
         r.set_model(get_model_matrix(angle));
         r.set_view(get_view_matrix(eye_pos));
         r.set_projection(get_projection_matrix(45, 1, 0.1, 50));
