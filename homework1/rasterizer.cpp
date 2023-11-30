@@ -132,14 +132,14 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
     return Vector4f(v3.x(), v3.y(), v3.z(), w);
 }
 
-void rst::rasterizer::draw(rst::pos_buf_id pos_id, rst::ind_buf_id ind_id, rst::Primitive type)
+void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_id, rst::Primitive type)
 {
     if (type != rst::Primitive::Triangle)
     {
         throw std::runtime_error("Drawing primitives other than triangle is not implemented yet!");
     }
-    auto& buf = pos_buf[pos_id.pos_id];
-    auto& ind = ind_buf[ind_id.ind_id];
+    auto& buf = pos_buf[pos_buf_id.pos_id];
+    auto& ind = ind_buf[ind_buf_id.ind_id];
 
     float f1 = (100 - 0.1) / 2.0;
     float f2 = (100 + 0.1) / 2.0;
