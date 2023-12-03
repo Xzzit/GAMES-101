@@ -1,5 +1,7 @@
 # GAMES-101
 
+Environment: WSL2 Ubuntu 18.04 or 20.04
+
 update apt
 ```
 sudo apt update && sudo apt upgrade
@@ -16,5 +18,6 @@ sudo apt install libopencv-dev libeigen3-dev
 ```
 
 Reference:
-* https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html
-* https://zhuanlan.zhihu.com/p/371080057
+* [Course Homepage](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html)
+* [Course Assignments](https://games-cn.org/forums/topic/allhw/)
+* [Initialize WSL2](https://zhuanlan.zhihu.com/p/371080057)
