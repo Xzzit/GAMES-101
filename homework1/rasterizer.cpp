@@ -161,21 +161,20 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
 
         for (auto &vert : v)
         {
+            // NDC to screen space
             vert.x() = 0.5*width*(vert.x()+1.0);
             vert.y() = 0.5*height*(vert.y()+1.0);
             vert.z() = vert.z() * f1 + f2;
         }
 
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; i++)
         {
-            t.setVertex(i, v[i].head<3>());
-            t.setVertex(i, v[i].head<3>());
-            t.setVertex(i, v[i].head<3>());
+            t.setVertex(i, v[i].head<3>()); // head<3>(): first 3 elements
         }
 
         t.setColor(0, 255.0,  0.0,  0.0);
         t.setColor(1, 0.0  ,255.0,  0.0);
-        t.setColor(2, 0.0  ,  0.0,255.0);
+        t.setColor(2, 0.0  ,  0.0,  255.0);
 
         rasterize_wireframe(t);
     }
