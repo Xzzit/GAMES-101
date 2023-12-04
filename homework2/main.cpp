@@ -12,12 +12,12 @@ Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
     Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
 
     Eigen::Matrix4f translate;
-    translate << 1,0,0,-eye_pos[0],
-                 0,1,0,-eye_pos[1],
-                 0,0,1,-eye_pos[2],
-                 0,0,0,1;
+    translate << 1, 0, 0, -eye_pos[0],
+                 0, 1, 0, -eye_pos[1],
+                 0, 0, 1, -eye_pos[2],
+                 0, 0, 0, 1;
 
-    view = translate*view;
+    view = translate * view;
 
     return view;
 }
@@ -32,6 +32,10 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
 {
     // TODO: Copy-paste your implementation from the previous assignment.
     Eigen::Matrix4f projection;
+    projection <<   zNear / (aspect_ratio * zNear * tan(eye_fov / 360 * MY_PI)), 0, 0, 0,
+                    0, zNear / (zNear * tan(eye_fov / 360 * MY_PI)), 0, 0,
+                    0, 0, -(zFar + zNear) / (zFar - zNear), -2 * zFar * zNear / (zFar - zNear),
+                    0, 0, -1, 0;
 
     return projection;
 }
@@ -50,34 +54,30 @@ int main(int argc, const char** argv)
 
     rst::rasterizer r(700, 700);
 
-    Eigen::Vector3f eye_pos = {0,0,5};
+    Eigen::Vector3f eye_pos = {0, 0, 5};
 
 
     std::vector<Eigen::Vector3f> pos
-            {
-                    {2, 0, -2},
-                    {0, 2, -2},
-                    {-2, 0, -2},
-                    {3.5, -1, -5},
-                    {2.5, 1.5, -5},
-                    {-1, 0.5, -5}
-            };
+    {
+        {2, 0, -2}, {0, 2, -2}, {-2, 0, -2},
+        {3.5, -1, -5}, {2.5, 1.5, -5}, {-1, 0.5, -5}
+    };
 
     std::vector<Eigen::Vector3i> ind
-            {
-                    {0, 1, 2},
-                    {3, 4, 5}
-            };
+    {
+        {0, 1, 2},
+        {3, 4, 5}
+    };
 
     std::vector<Eigen::Vector3f> cols
-            {
-                    {217.0, 238.0, 185.0},
-                    {217.0, 238.0, 185.0},
-                    {217.0, 238.0, 185.0},
-                    {185.0, 217.0, 238.0},
-                    {185.0, 217.0, 238.0},
-                    {185.0, 217.0, 238.0}
-            };
+    {
+        {217.0, 238.0, 185.0},
+        {217.0, 238.0, 185.0},
+        {217.0, 238.0, 185.0},
+        {185.0, 217.0, 238.0},
+        {185.0, 217.0, 238.0},
+        {185.0, 217.0, 238.0}
+    };
 
     auto pos_id = r.load_positions(pos);
     auto ind_id = r.load_indices(ind);
