@@ -29,3 +29,17 @@ Finally, we provide two hard-coded triangles to test your implementation.
 * [10 points] Correctly testing whether a point is inside a triangle.
 * [10 points] Correct implementation of the z-buffer algorithm to draw triangles in the correct order on the screen.
 * [Bonus 5 points] Implementing Anti-aliasing using super-sampling: You might notice that when we magnify the image, the edges of the image appear jagged. This issue can be addressed with super-sampling, i.e., sampling each pixel with a 2 * 2 grid and comparing the results (without the need to consider sample reuse between pixels). It is important to note that each sample within a pixel must maintain its own depth value, meaning each pixel should maintain a sample list. Lastly, if you implement this correctly, your triangles should not have abnormal black edges.
+
+# Compile and Run
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
+```
+./Rasterizer            // Run the program in a loop, creating a window display
+
+./Rasterizer image.png  // Run the program and save the result in image.png
+```
