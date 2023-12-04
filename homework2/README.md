@@ -43,3 +43,9 @@ make
 
 ./Rasterizer image.png  // Run the program and save the result in image.png
 ```
+
+# Expected Results
+```
+./Rasterizer image.png
+```
+![Expected Results](./image.png)
