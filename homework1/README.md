@@ -1,4 +1,4 @@
-# Assignment 2
+# Assignment 1
 In this assignment, you don't need to use the Triangle class, so the files you need to understand and modify are: `rasterizer.hpp` and `main.cpp`. The `rasterizer.hpp` file is responsible for generating the renderer interface and drawing.
 
 The Rasterizer class plays an important role in this program system, with its member variables and functions as follows:

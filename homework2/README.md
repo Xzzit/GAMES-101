@@ -1,4 +1,4 @@
-# Assignment 3
+# Assignment 2
 In our last assignment, although we managed to draw a wireframe triangle on the screen, it didn't look very interesting. Therefore, this time we are going to take it a step further - drawing a solid triangle on the screen, in other words, rasterizing a triangle. In the previous assignment, after the viewport transformation, we called the function `rasterize_wireframe(const Triangle& t)`. However, this time, you need to fill in and call the function `rasterize_triangle(const Triangle& t)` yourself.
 
 The workflow inside this function is as follows:
