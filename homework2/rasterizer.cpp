@@ -121,35 +121,27 @@ void rst::rasterizer::draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, col_buf
     }
 }
 
-// Define the bounding box min and max
-struct MinMax {
-    int x_min;
-    int x_max;
-    int y_min;
-    int y_max;
-};
-
 // Define the bounding box function
-MinMax bbox(const std::array<Eigen::Vector4f, 3>& v) {
-    MinMax minmax;
-    minmax.x_min = std::min(std::floor(v[0].x()),
+static std::tuple<int, int, int, int> bbox(const std::array<Eigen::Vector4f, 3>& v) {
+
+    int x_min = std::min(std::floor(v[0].x()),
                             std::min(std::floor(v[1].x()),
                                      std::floor(v[2].x()))
                             );
-    minmax.x_max = std::max(std::ceil(v[0].x()),
+    int x_max = std::max(std::ceil(v[0].x()),
                             std::max(std::ceil(v[1].x()),
                                      std::ceil(v[2].x()))
                             );
-    minmax.y_min = std::min(std::floor(v[0].y()),
+    int y_min = std::min(std::floor(v[0].y()),
                             std::min(std::floor(v[1].y()),
                                      std::floor(v[2].y()))
                             );
-    minmax.y_max = std::max(std::ceil(v[0].y()),
+    int y_max = std::max(std::ceil(v[0].y()),
                             std::max(std::ceil(v[1].y()),
                                      std::ceil(v[2].y()))
                             );
 
-    return minmax;
+    return {x_min, x_max, y_min, y_max};
 }
 
 //Screen space rasterization
@@ -157,12 +149,12 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
     auto v = t.toVector4();
     
     // TODO : Find out the bounding box of current triangle.
-    MinMax minmax = bbox(v);
+    auto[x_min, x_max, y_min, y_max] = bbox(v);
 
     // iterate through the pixel and find if the current pixel is inside the triangle
-    for (int x = minmax.x_min; x <= minmax.x_max; x++)
+    for (int x = x_min; x <= x_max; x++)
     {
-        for (int y = minmax.y_min; y <= minmax.y_max; y++)
+        for (int y = y_min; y <= y_max; y++)
         {
             // TODO : Anti-aliasing super-sampling
 
