@@ -157,7 +157,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
         for (int y = y_min; y <= y_max; y++)
         {
             // TODO : Anti-aliasing super-sampling
-            int num = 4; // num-1 * num-1 sub-pixels
+            int num = 3; // num-1 * num-1 sub-pixels
             int count = 0;
             float z_interpolated = std::numeric_limits<float>::infinity();
 

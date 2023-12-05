@@ -48,4 +48,5 @@ make
 ```
 ./Rasterizer image.png
 ```
-![Expected Results](./image.png)
+![Expected Results](./example/image.png)
+![Expected Results](./example/anti.png)
