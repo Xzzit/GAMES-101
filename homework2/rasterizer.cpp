@@ -40,7 +40,7 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
 }
 
 
-static bool insideTriangle(int x, int y, const Vector3f* _v)
+static bool insideTriangle(float x, float y, const Vector3f* _v)
 {   
     // TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]
     Eigen::Vector3f ab;
@@ -53,9 +53,9 @@ static bool insideTriangle(int x, int y, const Vector3f* _v)
     ab = _v[1] - _v[0];
     bc = _v[2] - _v[1];
     ca = _v[0] - _v[2];
-    ap = Eigen::Vector3f(x + 0.5, y + 0.5, 0) - _v[0];
-    bp = Eigen::Vector3f(x + 0.5, y + 0.5, 0) - _v[1];
-    cp = Eigen::Vector3f(x + 0.5, y + 0.5, 0) - _v[2];
+    ap = Eigen::Vector3f(x, y, 0) - _v[0];
+    bp = Eigen::Vector3f(x, y, 0) - _v[1];
+    cp = Eigen::Vector3f(x, y, 0) - _v[2];
 
     return ((ab.cross(ap).z() > 0 && bc.cross(bp).z() > 0 && ca.cross(cp).z() > 0)
     || (ab.cross(ap).z() < 0 && bc.cross(bp).z() < 0 && ca.cross(cp).z() < 0)
@@ -164,8 +164,10 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
     {
         for (int y = minmax.y_min; y <= minmax.y_max; y++)
         {
+            // TODO : Anti-aliasing super-sampling
+
             // If so, use the following code to get the interpolated z value.
-            if (insideTriangle(x, y, t.v))
+            if (insideTriangle(x + 0.5, y + 0.5, t.v))
             {
                 auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
                 float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
