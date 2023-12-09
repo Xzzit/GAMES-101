@@ -141,7 +141,7 @@ Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload& payload)
 
     Eigen::Vector3f color = payload.color;
     Eigen::Vector3f point = payload.view_pos;
-    Eigen::Vector3f normal = payload.normal;
+    Eigen::Vector3f normal = (payload.normal).normalized();
 
     Eigen::Vector3f result_color = {0, 0, 0};
     for (auto& light : lights)
@@ -149,6 +149,22 @@ Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload& payload)
         // TODO: For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* 
         // components are. Then, accumulate that result on the *result_color* object.
         
+        // Diffuse
+        Eigen::Vector3f light_dir = (light.position - point).normalized();
+        float diff = std::max(0.0f, normal.dot(light_dir));
+        float r = (light.position - point).norm();
+        Eigen::Vector3f Ld = kd.cwiseProduct(light.intensity / std::pow(r, 2)) * diff;
+
+        // Specular
+        Eigen::Vector3f view_dir = (eye_pos - point).normalized();
+        Eigen::Vector3f h = (light_dir + view_dir).normalized();
+        float spec = std::pow(std::max(0.0f, normal.dot(h)), p);
+        Eigen::Vector3f Ls = ks.cwiseProduct(light.intensity / std::pow(r, 2)) * spec;
+
+        // Ambient
+        Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);
+
+        result_color += (Ld + Ls + La);
     }
 
     return result_color * 255.f;
