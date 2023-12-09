@@ -149,7 +149,7 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
     return Vector4f(v3.x(), v3.y(), v3.z(), w);
 }
 
-static bool insideTriangle(int x, int y, const Vector4f* _v){
+static bool insideTriangle(float x, float y, const Vector4f* _v){
     Vector3f v[3];
     for(int i=0;i<3;i++)
         v[i] = {_v[i].x(),_v[i].y(), 1.0};
@@ -207,7 +207,7 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList) {
         }
 
         // See explaination in: https://gamedev.stackexchange.com/questions/168407/normal-matrix-in-plain-english
-        // mm is in view space
+        // Note: we caculate the reflection in view space.
         std::array<Eigen::Vector4f, 3> mm {
                 (view * model * t->v[0]),
                 (view * model * t->v[1]),
@@ -296,10 +296,10 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
     {
         for (int y = y_min; y <= y_max; y++)
         {
-            if (insideTriangle(x, y, t.v))
+            if (insideTriangle(x+0.5, y+0.5, t.v))
             {
                 // Calculate the alpha, beta and gamma values
-                auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                auto[alpha, beta, gamma] = computeBarycentric2D(x+0.5, y+0.5, t.v);
 
                 // Calculate the interpolated z value
                 // v[i].w() is the vertex view space depth value z.
