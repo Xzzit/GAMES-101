@@ -37,13 +37,18 @@ make
 ```
 
 ```
-./Rasterizer output.png normal          // Use the normal shader.
+./Rasterizer normal.png normal          // Use the normal shader.
 
-./Rasterizer output.png phong           // Use the phong shader.
+./Rasterizer phong.png phong           // Use the phong shader.
 
-./Rasterizer output.png texture         // Use the texture shader.
+./Rasterizer texture.png texture         // Use the texture shader.
 
-./Rasterizer output.png bump            // Use the bump shader.
+./Rasterizer bump.png bump            // Use the bump shader.
 
-./Rasterizer output.png displacement    // Use the displacement shader.
+./Rasterizer displacement.png displacement    // Use the displacement shader.
 ```
+
+# Expected Results
+![Normal](./example/normal.png)
+![Phong](./example/phong.png)
+![Texture](./example/texture.png)
