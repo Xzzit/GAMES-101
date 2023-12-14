@@ -11,6 +11,49 @@ bool rayTriangleIntersect(const Vector3f& v0, const Vector3f& v1, const Vector3f
     // that's specified bt v0, v1 and v2 intersects with the ray (whose
     // origin is *orig* and direction is *dir*)
     // Also don't forget to update tnear, u and v.
+    // Reference: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    Vector3f e1 = v1 - v0;
+    Vector3f e2 = v2 - v0;
+    Vector3f s = orig - v0;
+    Vector3f s1 = crossProduct(dir, e2);
+    Vector3f s2 = crossProduct(s, e1);
+
+    float divisor = dotProduct(s1, e1);
+    if (divisor == 0) return false;
+    
+    float invDivisor = 1 / divisor;
+
+    float t = dotProduct(s2, e2) * invDivisor;
+    if (t < 0) return false;
+
+    float b1 = dotProduct(s1, s) * invDivisor;
+    if (b1 < 0 || b1 > 1) return false;
+
+    float b2 = dotProduct(s2, dir) * invDivisor;
+    if (b2 < 0 || b2 > 1) return false;
+
+    // determine if p in triangle.
+    // (a, b, c) stands for (v0, v1, v2)
+    Vector3f p = orig + t * dir;
+
+    Vector3f ab = v1 - v0;
+    Vector3f ap = p - v0;
+    Vector3f bp = p - v1;
+    Vector3f bc = v2 - v1;
+    Vector3f cp = p - v2;
+    Vector3f ca = v0 - v2;
+
+    Vector3f abXap = crossProduct(ab, ap);
+    Vector3f bcXbp = crossProduct(bc, bp);
+    Vector3f caXcp = crossProduct(ca, cp);
+
+    if (dotProduct(abXap, bcXbp) >= 0 && dotProduct(bcXbp, caXcp) >= 0) {
+        tnear = t;
+        u = b1;
+        v = b2;
+        return true;
+    }
+    
     return false;
 }
 

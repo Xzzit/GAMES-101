@@ -3,6 +3,7 @@
 #include "Renderer.hpp"
 #include "Scene.hpp"
 #include <optional>
+#include <opencv2/opencv.hpp>
 
 inline float deg2rad(const float &deg)
 { return deg * M_PI/180.0; }
@@ -109,7 +110,7 @@ std::optional<hit_payload> trace(
 // Implementation of the Whitted-style light transport algorithm (E [S*] (D|G) L)
 //
 // This function is the function that compute the color at the intersection point
-// of a ray defined by a position and a direction. Note that thus function is recursive (it calls itself).
+// of a ray defined by a position and a direction. Note that this function is recursive (it calls itself).
 //
 // If the material of the intersected object is either reflective or reflective and refractive,
 // then we compute the reflection/refraction direction and cast two new rays into the scene
@@ -135,7 +136,10 @@ Vector3f castRay(
         Vector3f hitPoint = orig + dir * payload->tNear;
         Vector3f N; // normal
         Vector2f st; // st coordinates
+
+        // compute normal
         payload->hit_obj->getSurfaceProperties(hitPoint, dir, payload->index, payload->uv, N, st);
+
         switch (payload->hit_obj->materialType) {
             case REFLECTION_AND_REFRACTION:
             {
@@ -216,6 +220,7 @@ void Renderer::Render(const Scene& scene)
     float imageAspectRatio = scene.width / (float)scene.height;
 
     // Use this variable as the eye position to start your rays.
+    // Ref: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays.html
     Vector3f eye_pos(0);
     int m = 0;
     for (int j = 0; j < scene.height; ++j)
@@ -228,23 +233,24 @@ void Renderer::Render(const Scene& scene)
             // TODO: Find the x and y positions of the current pixel to get the direction
             // vector that passes through it.
             // Also, don't forget to multiply both of them with the variable *scale*, and
-            // x (horizontal) variable with the *imageAspectRatio*            
+            // x (horizontal) variable with the *imageAspectRatio*
+            x = (2 * (i + 0.5) / (float)scene.width - 1) * scale * imageAspectRatio;
+            y = (1 - 2 * (j + 0.5) / (float)scene.height) * scale;
 
             Vector3f dir = Vector3f(x, y, -1); // Don't forget to normalize this direction!
+            dir = normalize(dir);
             framebuffer[m++] = castRay(eye_pos, dir, scene, 0);
         }
         UpdateProgress(j / (float)scene.height);
     }
 
     // save framebuffer to file
-    FILE* fp = fopen("binary.ppm", "wb");
-    (void)fprintf(fp, "P6\n%d %d\n255\n", scene.width, scene.height);
-    for (auto i = 0; i < scene.height * scene.width; ++i) {
-        static unsigned char color[3];
-        color[0] = (char)(255 * clamp(0, 1, framebuffer[i].x));
-        color[1] = (char)(255 * clamp(0, 1, framebuffer[i].y));
-        color[2] = (char)(255 * clamp(0, 1, framebuffer[i].z));
-        fwrite(color, 1, 3, fp);
+    cv::Mat image(scene.height, scene.width, CV_8UC3);
+    for (int i = 0; i < scene.height * scene.width; ++i) {
+        image.at<cv::Vec3b>(i / scene.width, i % scene.width)[2] = (uchar)(255 * clamp(0, 1, framebuffer[i].x));
+        image.at<cv::Vec3b>(i / scene.width, i % scene.width)[1] = (uchar)(255 * clamp(0, 1, framebuffer[i].y));
+        image.at<cv::Vec3b>(i / scene.width, i % scene.width)[0] = (uchar)(255 * clamp(0, 1, framebuffer[i].z));
     }
-    fclose(fp);    
+    
+    cv::imwrite("image.png", image); // Save as PNG
 }
