@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Scene.hpp"
 #include "Renderer.hpp"
+#include <opencv2/opencv.hpp>
 
 
 inline float deg2rad(const float& deg) { return deg * M_PI / 180.0; }
@@ -28,13 +29,12 @@ void Renderer::Render(const Scene& scene)
             float x = (2 * (i + 0.5) / (float)scene.width - 1) *
                       imageAspectRatio * scale;
             float y = (1 - 2 * (j + 0.5) / (float)scene.height) * scale;
-            // TODO: Find the x and y positions of the current pixel to get the
-            // direction
-            //  vector that passes through it.
-            // Also, don't forget to multiply both of them with the variable
-            // *scale*, and x (horizontal) variable with the *imageAspectRatio*
 
-            // Don't forget to normalize this direction!
+            // normalize this direction
+            Vector3f dir = normalize(Vector3f(x, y, -1));
+
+            // cast ray into scene and return color
+            framebuffer[m++] = scene.castRay(Ray(eye_pos, dir), 0);
 
         }
         UpdateProgress(j / (float)scene.height);
@@ -42,14 +42,12 @@ void Renderer::Render(const Scene& scene)
     UpdateProgress(1.f);
 
     // save framebuffer to file
-    FILE* fp = fopen("binary.ppm", "wb");
-    (void)fprintf(fp, "P6\n%d %d\n255\n", scene.width, scene.height);
-    for (auto i = 0; i < scene.height * scene.width; ++i) {
-        static unsigned char color[3];
-        color[0] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].x));
-        color[1] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].y));
-        color[2] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].z));
-        fwrite(color, 1, 3, fp);
+    cv::Mat image(scene.height, scene.width, CV_8UC3);
+    for (int i = 0; i < scene.height * scene.width; ++i) {
+        image.at<cv::Vec3b>(i / scene.width, i % scene.width)[2] = (uchar)(255 * clamp(0, 1, framebuffer[i].x));
+        image.at<cv::Vec3b>(i / scene.width, i % scene.width)[1] = (uchar)(255 * clamp(0, 1, framebuffer[i].y));
+        image.at<cv::Vec3b>(i / scene.width, i % scene.width)[0] = (uchar)(255 * clamp(0, 1, framebuffer[i].z));
     }
-    fclose(fp);    
+    
+    cv::imwrite("image.png", image); // Save as PNG   
 }
