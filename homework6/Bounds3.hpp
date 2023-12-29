@@ -94,7 +94,7 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
                                 const std::array<int, 3>& dirIsNeg) const
 {
     // invDir: ray direction(x,y,z), invDir=(1.0/x,1.0/y,1.0/z), use this because Multiply is faster that Division
-    // dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x>0),int(y>0),int(z>0)], use this to simplify your logic
+    // dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x<0),int(y<0),int(z<0)], use this to simplify your logic
     // TODO test if ray bound intersects
     
     auto tx_min = (pMin.x - ray.origin.x) * invDir.x;
@@ -115,7 +115,15 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
     auto t_enter = std::max(tx_min, std::max(ty_min, tz_min));
     auto t_exit = std::min(tx_max, std::min(ty_max, tz_max));
 
-    return t_enter <= t_exit && t_exit >= 0;
+    // print whether the ray intersects the bounding box
+    // std::cout << "t_enter: " << t_enter << std::endl;
+    // std::cout << "t_exit: " << t_exit << std::endl;
+    // std::cout << "t_enter <= t_exit: " << (t_enter <= t_exit) << std::endl;
+    // std::cout << "t_exit >= 0: " << (t_exit >= 0) << std::endl;
+    // std::cout << "t_enter <= t_exit && t_exit >= 0: " << (t_enter <= t_exit && t_exit >= 0) << std::endl;
+    // std::cout << "------------------------" << std::endl;
+
+    return (t_enter < t_exit && t_exit >= 0);
 }
 
 inline Bounds3 Union(const Bounds3& b1, const Bounds3& b2)

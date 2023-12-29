@@ -212,24 +212,31 @@ inline Intersection Triangle::getIntersection(Ray ray)
 {
     Intersection inter;
 
+    // ray hit the back face
     if (dotProduct(ray.direction, normal) > 0)
         return inter;
-    double u, v, t_tmp = 0;
-    Vector3f pvec = crossProduct(ray.direction, e2);
-    double det = dotProduct(e1, pvec);
+    
+    // Moller-Trumbore intersection algorithm
+    double b1, b2, t_tmp = 0;
+    Vector3f s = ray.origin - v0;
+    Vector3f s1 = crossProduct(ray.direction, e2);
+    Vector3f s2 = crossProduct(s, e1);
+    double det = dotProduct(e1, s1);
+
     if (fabs(det) < EPSILON)
         return inter;
 
     double det_inv = 1. / det;
-    Vector3f tvec = ray.origin - v0;
-    u = dotProduct(tvec, pvec) * det_inv;
-    if (u < 0 || u > 1)
+    
+    t_tmp = dotProduct(s2, e2) * det_inv;
+
+    b1 = dotProduct(s1, s) * det_inv;
+    if (b1 < 0 || b1 > 1)
         return inter;
-    Vector3f qvec = crossProduct(tvec, e1);
-    v = dotProduct(ray.direction, qvec) * det_inv;
-    if (v < 0 || u + v > 1)
+    
+    b2 = dotProduct(s2, ray.direction) * det_inv;
+    if (b2 < 0 || b1 + b2 > 1)
         return inter;
-    t_tmp = dotProduct(e2, qvec) * det_inv;
 
     // TODO find ray triangle intersection
     if (t_tmp > 0) {
