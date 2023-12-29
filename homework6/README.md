@@ -26,3 +26,6 @@ We have modified the following content in the code framework:
 * Bounds3.hpp: The Bounding Box class, where each bounding box can be described by two points, pMin and pMax (consider why this is the case). The Bounds3::Union function is used to merge two bounding boxes into a larger one. Like materials, each object instance in the scene has its own bounding box.
 
 * BVH.hpp: The BVH acceleration class. The scene has an instance of BVHAccel. Starting from the root node, we can recursively construct the BVH of the scene from the list of objects.
+
+## Expected Results
+![RayTracing](./image.png)
