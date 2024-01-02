@@ -27,4 +27,6 @@ make
 ```
 
 ## Results
-![RayTracing](./image.png)
+![RayTracing](./example/image.png)
+![RayTracing](./example/reflection.png)
+![RayTracing](./example/relection_error.png)

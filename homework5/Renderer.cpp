@@ -162,8 +162,8 @@ Vector3f castRay(
                 float kr = fresnel(dir, N, payload->hit_obj->ior);
                 Vector3f reflectionDirection = reflect(dir, N);
                 Vector3f reflectionRayOrig = (dotProduct(reflectionDirection, N) < 0) ?
-                                             hitPoint - N * scene.epsilon :
-                                             hitPoint + N * scene.epsilon;
+                                             hitPoint + N * scene.epsilon :
+                                             hitPoint - N * scene.epsilon;
                 hitColor = castRay(reflectionRayOrig, reflectionDirection, scene, depth + 1) * kr;
                 break;
             }
