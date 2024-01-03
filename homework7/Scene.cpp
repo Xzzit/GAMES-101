@@ -99,7 +99,7 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
         float distance = (light_sample.coords - intersection.coords).norm();
 
         // Compute the radiance
-        Vector3f L_dir = L_i * BRDF * cos_theta * cos_theta_prime / distance / pdf_light;
+        Vector3f L_dir = L_i * BRDF * cos_theta * cos_theta_prime / pow(distance, 2) / pdf_light;
         radiance += L_dir;
 
         // print
@@ -110,6 +110,7 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
         // std::cout << "distance: " << distance << std::endl;
         // std::cout << "pdf_light: " << pdf_light << std::endl;
         // std::cout << "L_dir: " << L_dir << std::endl;
+        // std::cout << "\n" << std::endl;
     }
 
     return radiance;
