@@ -25,7 +25,7 @@ void Renderer::Render(const Scene& scene)
     int m = 0;
 
     // change the spp value to change sample ammount
-    int spp = 16;
+    int spp = 64;
     std::cout << "SPP: " << spp << "\n";
     for (uint32_t j = 0; j < scene.height; ++j) {
         for (uint32_t i = 0; i < scene.width; ++i) {
@@ -44,13 +44,24 @@ void Renderer::Render(const Scene& scene)
     }
     UpdateProgress(1.f);
 
-    // save framebuffer to file
+    // save framebuffer to file as PNG file
     cv::Mat image(scene.height, scene.width, CV_8UC3);
     for (int i = 0; i < scene.height * scene.width; ++i) {
         image.at<cv::Vec3b>(i / scene.width, i % scene.width)[2] = (uchar)(255 * clamp(0, 1, framebuffer[i].x));
         image.at<cv::Vec3b>(i / scene.width, i % scene.width)[1] = (uchar)(255 * clamp(0, 1, framebuffer[i].y));
         image.at<cv::Vec3b>(i / scene.width, i % scene.width)[0] = (uchar)(255 * clamp(0, 1, framebuffer[i].z));
+    } 
+    cv::imwrite("image.png", image);
+
+    // save framebuffer to file as ppm file
+    FILE* fp = fopen("binary.ppm", "wb");
+    (void)fprintf(fp, "P6\n%d %d\n255\n", scene.width, scene.height);
+    for (auto i = 0; i < scene.height * scene.width; ++i) {
+        static unsigned char color[3];
+        color[0] = (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].x), 0.6f));
+        color[1] = (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].y), 0.6f));
+        color[2] = (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].z), 0.6f));
+        fwrite(color, 1, 3, fp);
     }
-    
-    cv::imwrite("image.png", image); // Save as PNG     
+    fclose(fp);  
 }

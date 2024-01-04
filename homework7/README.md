@@ -104,3 +104,5 @@ $ make
 $ ./RayTracing
 ```
 
+## Expeted Output
+![image](image.png)
