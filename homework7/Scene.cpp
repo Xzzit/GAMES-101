@@ -73,6 +73,7 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
         {
             // If the intersection is with a light source, return the emission
             radiance = intersection.m->getEmission();
+            return radiance;
         }
 
         else
@@ -92,11 +93,22 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
             // If the ray is blocked, then the radiance is 0
             // If the ray is not blocked, then the radiance is the direct light
             
-            
             // Sample light source
             Intersection light_sample;
             float pdf_light;
             sampleLight(light_sample, pdf_light);
+
+            // Check if the ray is blocked by other objects
+            Vector3f new_origin = intersection.coords + intersection.normal * EPSILON;
+            Vector3f new_direction = normalize(light_sample.coords - intersection.coords);
+            Ray new_ray = Ray(new_origin, new_direction);
+            Intersection new_intersection = Scene::intersect(new_ray);
+
+            // If the ray is blocked, then the radiance is 0
+            if (new_intersection.happened && !new_intersection.m->hasEmission())
+            {
+                return radiance;
+            }
 
             // Compute light intensity
             Vector3f L_i = light_sample.emit;
