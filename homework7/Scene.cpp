@@ -68,49 +68,64 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
 
     if (intersection.happened)
     {
-        // [comment]
-        // Compute the direct light
-        // formula: L_dir = L_i * BRDF * cos(theta) * cos(theta') / ||x' - p||^2 / pdf
-        // L_i: light intensity
-        // BRDF or f_r: material BRDF
-        // cos(theta): cosine of the angle between the light direction and the normal at the intersection point
-        // cos(theta'): cosine of the angle between the light direction and the normal at the light source
-        // ||x' - p||: distance between the light source and the intersection point
-        // pdf: probability density function of the light source
-        // [comment]
-        
-        // Sample light source
-        Intersection light_sample;
-        float pdf_light;
-        sampleLight(light_sample, pdf_light);
+        // Check if the intersection is with a light source
+        if (intersection.m->hasEmission())
+        {
+            // If the intersection is with a light source, return the emission
+            radiance = intersection.m->getEmission();
+        }
 
-        // Compute light intensity
-        Vector3f L_i = light_sample.emit;
+        else
+        {
+            // [comment]
+            // Compute the direct light
+            // formula: L_dir = L_i * BRDF * cos(theta) * cos(theta') / ||x' - p||^2 / pdf
+            // L_i: light intensity
+            // BRDF or f_r: material BRDF
+            // cos(theta): cosine of the angle between the light direction and the normal at the intersection point
+            // cos(theta'): cosine of the angle between the light direction and the normal at the light source
+            // ||x' - p||: distance between the light source and the intersection point
+            // pdf: probability density function of the light source
+            // [comment]
 
-        // Compute BRDF
-        Vector3f light_dir = normalize(light_sample.coords - intersection.coords);
-        Vector3f BRDF = intersection.m->eval(ray.direction, light_dir, intersection.normal);
+            // Check if the ray is blocked by other objects
+            // If the ray is blocked, then the radiance is 0
+            // If the ray is not blocked, then the radiance is the direct light
+            
+            
+            // Sample light source
+            Intersection light_sample;
+            float pdf_light;
+            sampleLight(light_sample, pdf_light);
 
-        // Compute theta and theta'
-        float cos_theta = dotProduct(intersection.normal, light_dir);
-        float cos_theta_prime = dotProduct(light_sample.normal, -light_dir);
+            // Compute light intensity
+            Vector3f L_i = light_sample.emit;
 
-        // Compute distance between the light source and the intersection point
-        float distance = (light_sample.coords - intersection.coords).norm();
+            // Compute BRDF
+            Vector3f light_dir = normalize(light_sample.coords - intersection.coords);
+            Vector3f BRDF = intersection.m->eval(ray.direction, light_dir, intersection.normal);
 
-        // Compute the radiance
-        Vector3f L_dir = L_i * BRDF * cos_theta * cos_theta_prime / pow(distance, 2) / pdf_light;
-        radiance += L_dir;
+            // Compute theta and theta'
+            float cos_theta = dotProduct(intersection.normal, light_dir);
+            float cos_theta_prime = dotProduct(light_sample.normal, -light_dir);
 
-        // print
-        // std::cout << "L_i: " << L_i << std::endl;
-        // std::cout << "BRDF: " << BRDF << std::endl;
-        // std::cout << "cos_theta: " << cos_theta << std::endl;
-        // std::cout << "cos_theta_prime: " << cos_theta_prime << std::endl;
-        // std::cout << "distance: " << distance << std::endl;
-        // std::cout << "pdf_light: " << pdf_light << std::endl;
-        // std::cout << "L_dir: " << L_dir << std::endl;
-        // std::cout << "\n" << std::endl;
+            // Compute distance between the light source and the intersection point
+            float distance = (light_sample.coords - intersection.coords).norm();
+
+            // Compute the radiance
+            Vector3f L_dir = L_i * BRDF * cos_theta * cos_theta_prime / pow(distance, 2) / pdf_light;
+            radiance += L_dir;
+
+            // print
+            // std::cout << "L_i: " << L_i << std::endl;
+            // std::cout << "BRDF: " << BRDF << std::endl;
+            // std::cout << "cos_theta: " << cos_theta << std::endl;
+            // std::cout << "cos_theta_prime: " << cos_theta_prime << std::endl;
+            // std::cout << "distance: " << distance << std::endl;
+            // std::cout << "pdf_light: " << pdf_light << std::endl;
+            // std::cout << "L_dir: " << L_dir << std::endl;
+            // std::cout << "\n" << std::endl;
+        }
     }
 
     return radiance;
