@@ -1,5 +1,5 @@
 # Assignment 1
-In this assignment, you don't need to use the Triangle class, so the files you need to understand and modify are: `rasterizer.hpp` and `main.cpp`. The `rasterizer.hpp` file is responsible for generating the renderer interface and drawing.
+In this assignment, the files you need to understand and modify are: `rasterizer.hpp` and `main.cpp`. The `rasterizer.hpp` file is responsible for generating the renderer interface and drawing.
 
 The Rasterizer class plays an important role in this program system, with its member variables and functions as follows:
 
@@ -26,18 +26,22 @@ make
 ```
 
 ```
-./Rasterizer    // Run the program in a loop, creating a window display, and you can
-                // use the A and D keys to rotate the triangle.
+// Run the program in a loop, creating a window display, and you can
+// use the WASD keys to move the triangle, QE keys to rotate the triangle
+// and the ZX keys to sclae the triangle.
+./Rasterizer
 
-./Rasterizer -r 20  // Run the program and rotate the triangle by 20 degrees, then
-                    // save the result in output.png.
+// Scale the triangle by 1, rotate the it by 20 degrees, 
+// move it by (0 ,0) then save the result in output.png.
+./Rasterizer -s 1 -r 20 -t 0 0
 
-./Rasterizer -r 20 image.png    // Run the program and rotate the triangle by 20 degrees,
-                                // then save the result in image.png.
+
+// Name the output file to image.png
+./Rasterizer -s 1 -r 20 -t 0 0 -n image.png     
 ```
 
 # Expected Results
 ```
-./Rasterizer -r 20 image.png
+./Rasterizer -s 1 -r 20 -t 0 0 -n image.png
 ```
 ![Expected Results](./image.png)
