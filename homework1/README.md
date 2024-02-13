@@ -32,12 +32,8 @@ make
 ./Rasterizer
 
 // Scale the triangle by 1, rotate the it by 20 degrees, 
-// move it by (0 ,0) then save the result in output.png.
-./Rasterizer -s 1 -r 20 -t 0 0
-
-
-// Name the output file to image.png
-./Rasterizer -s 1 -r 20 -t 0 0 -n image.png     
+// move it by (0 ,0) then save the result in image.png.
+./Rasterizer -s 1 -r 20 -t 0 0 -n image.png    
 ```
 
 # Expected Results

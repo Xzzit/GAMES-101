@@ -39,9 +39,14 @@ make
 ```
 
 ```
-./Rasterizer            // Run the program in a loop, creating a window display
+// Run the program in a loop, creating a window display, and you can
+// use the WASD keys to move the triangle, QE keys to rotate the triangle
+// and the ZX keys to sclae the triangle.
+./Rasterizer
 
-./Rasterizer image.png  // Run the program and save the result in image.png
+// Scale the triangle by 1, rotate the it by 20 degrees, 
+// move it by (0 ,0) then save the result in image.png.
+./Rasterizer -s 1 -r 20 -t 0 0 -n image.png 
 ```
 
 # Expected Results
