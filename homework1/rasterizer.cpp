@@ -25,6 +25,46 @@ rst::ind_buf_id rst::rasterizer::load_indices(const std::vector<Eigen::Vector3i>
     return {id};
 }
 
+void rst::rasterizer::draw_line_simple(Eigen::Vector3f begin, Eigen::Vector3f end)
+{
+    auto x1 = begin.x();
+    auto y1 = begin.y();
+    auto x2 = end.x();
+    auto y2 = end.y();
+
+    if (x1 > x2)
+    {
+        std::swap(x1, x2);
+        std::swap(y1, y2);
+    }
+
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+
+    if (dx == 0)
+    {
+        if (y1 > y2)
+        {
+            std::swap(y1, y2);
+        }
+        for (int y = y1; y <= y2; y++)
+        {
+            Eigen::Vector3f point = Eigen::Vector3f(x1, y, 1.0f);
+            set_pixel(point, {255, 255, 255});
+        }
+        return;
+    }
+
+    float k = float(dy) / dx;
+
+    for (int x = x1; x <= x2; x++)
+    {
+        int y = k * (x - x1) + y1;
+        Eigen::Vector3f point = Eigen::Vector3f(x, y, 1.0f);
+        set_pixel(point, {255, 255, 255});
+    }
+}
+
 // Bresenham's line drawing algorithm
 // Code taken from a stack overflow answer: https://stackoverflow.com/a/16405254
 void rst::rasterizer::draw_line(Eigen::Vector3f begin, Eigen::Vector3f end)
@@ -141,8 +181,9 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
     auto& buf = pos_buf[pos_buf_id.pos_id];
     auto& ind = ind_buf[ind_buf_id.ind_id];
 
-    float f1 = (100 - 0.1) / 2.0;
-    float f2 = (100 + 0.1) / 2.0;
+    // f1 = (far - near) / 2, f2 = (far + near) / 2
+    float f1 = (50 - 0.1) / 2.0;
+    float f2 = (50 + 0.1) / 2.0;
 
     Eigen::Matrix4f mvp = projection * view * model;
     for (auto &i : ind)
@@ -162,9 +203,9 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
         for (auto &vert : v)
         {
             // NDC to screen space
-            vert.x() = 0.5*width*(vert.x()+1.0);
-            vert.y() = 0.5*height*(vert.y()+1.0);
-            vert.z() = vert.z() * f1 + f2;
+            vert.x() = 0.5 * width * (vert.x() + 1.0); // x in [-1, 1] to x in [0, width]
+            vert.y() = 0.5 * height * (vert.y() + 1.0); // y in [-1, 1] to y in [0, height]
+            vert.z() = vert.z() * f1 + f2; // z in [0, 1] to z in [near, far]
         }
 
         for (int i = 0; i < 3; i++)
@@ -182,9 +223,12 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
 
 void rst::rasterizer::rasterize_wireframe(const Triangle& t)
 {
-    draw_line(t.c(), t.a());
-    draw_line(t.c(), t.b());
-    draw_line(t.b(), t.a());
+    // draw_line(t.c(), t.a());
+    // draw_line(t.c(), t.b());
+    // draw_line(t.b(), t.a());
+    draw_line_simple(t.c(), t.a());
+    draw_line_simple(t.c(), t.b());
+    draw_line_simple(t.b(), t.a());
 }
 
 void rst::rasterizer::set_model(const Eigen::Matrix4f& m)
