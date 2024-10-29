@@ -226,9 +226,9 @@ void rst::rasterizer::rasterize_wireframe(const Triangle& t)
     // draw_line(t.c(), t.a());
     // draw_line(t.c(), t.b());
     // draw_line(t.b(), t.a());
-    draw_line_simple(t.c(), t.a());
-    draw_line_simple(t.c(), t.b());
-    draw_line_simple(t.b(), t.a());
+    draw_line(t.c(), t.a());
+    draw_line(t.c(), t.b());
+    draw_line(t.b(), t.a());
 }
 
 void rst::rasterizer::set_model(const Eigen::Matrix4f& m)
