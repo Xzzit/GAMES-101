@@ -205,7 +205,7 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buf_id, rst::ind_buf_id ind_buf_i
             // NDC to screen space
             vert.x() = 0.5 * width * (vert.x() + 1.0); // x in [-1, 1] to x in [0, width]
             vert.y() = 0.5 * height * (vert.y() + 1.0); // y in [-1, 1] to y in [0, height]
-            vert.z() = vert.z() * f1 + f2; // z in [0, 1] to z in [near, far]
+            vert.z() = vert.z() * f1 + f2; // z in [-1, 1] to z in [near, far]
         }
 
         for (int i = 0; i < 3; i++)
